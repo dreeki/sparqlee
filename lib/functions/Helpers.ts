@@ -343,7 +343,7 @@ export function string(s: string): E.StringLiteral {
   return new E.StringLiteral(s);
 }
 
-export function langString(s: string, lang: string) {
+export function langString(s: string, lang: string): E.LangStringLiteral {
   return new E.LangStringLiteral(s, lang);
 }
 

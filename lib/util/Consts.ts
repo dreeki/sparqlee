@@ -38,6 +38,9 @@ export enum TypeURL {
   XSD_UNSIGNED_BYTE = 'http://www.w3.org/2001/XMLSchema#unsignedByte',
   XSD_POSITIVE_INTEGER = 'http://www.w3.org/2001/XMLSchema#positiveInteger',
 
+  // Geo types
+  XSD_WKT_LITERAL = 'http://www.opengis.net/ont/geosparql#wktLiteral',
+
   // Other types
   XSD_DAYTIME_DURATION = 'http://www.w3.org/2001/XMLSchema#dayTimeDuration',
 }
@@ -159,7 +162,7 @@ export function decategorize(cat: PrimitiveNumericType): TypeURL {
 // ----------------------------------------------------------------------------
 
 export type OperatorCategory = 'regular' | 'special';
-export type Operator = RegularOperator | SpecialOperator;
+export type Operator = RegularOperator | SpecialOperator | GeoOperator;
 
 // TODO: Remove unneeded double typing
 export enum RegularOperator {
@@ -282,6 +285,24 @@ export const RegularOperators = Set(Object.values(RegularOperator));
 export const SpecialOperators = Set(Object.values(SpecialOperator));
 export const Operators = RegularOperators.union(SpecialOperators);
 
+export enum GeoOperator {
+  // Topological functions
+  sfContains = 'http://www.opengis.net/def/function/geosparql/sfContains',
+  sfCrosses = "http://www.opengis.net/def/function/geosparql/sfCrosses",
+  sfDisjoint = "http://www.opengis.net/def/function/geosparql/sfDisjoint",
+  sfEquals = "http://www.opengis.net/def/function/geosparql/sfEquals",
+  sfIntersects = "http://www.opengis.net/def/function/geosparql/sfIntersects",
+  sfOverlaps = "http://www.opengis.net/def/function/geosparql/sfOverlaps",
+  sfTouches = "http://www.opengis.net/def/function/geosparql/sfTouches",
+  sfWithin = "http://www.opengis.net/def/function/geosparql/sfWithin",
+
+  // Non Topological functions
+  intersection = "http://www.opengis.net/def/function/geosparql/intersection",
+  union = "http://www.opengis.net/def/function/geosparql/union"
+}
+
+export const GeoOperators = Set(Object.values(GeoOperator));
+
 export enum SetFunction {
   COUNT = 'count',
   SUM = 'sum',
@@ -303,7 +324,7 @@ export type NamedOperator =
   | TypeURL.XSD_INTEGER
   | TypeURL.XSD_DATE_TIME
   | TypeURL.XSD_DATE
-  | TypeURL.XSD_BOOLEAN;
+  | TypeURL.XSD_BOOLEAN
 
 export const NamedOperators = Set([
   TypeURL.XSD_STRING,

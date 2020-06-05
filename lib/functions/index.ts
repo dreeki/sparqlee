@@ -7,10 +7,12 @@ import {
   NamedFunction,
   RegularFunction,
   SpecialFunction,
+  GeoFunction,
 } from './Core';
 import { namedDefinitions } from './NamedFunctions';
 import { definitions } from './RegularFunctions';
 import { specialDefinitions } from './SpecialFunctions';
+import { geoDefinitions } from './GeoFunctions';
 
 export * from './Core';
 
@@ -31,3 +33,9 @@ export const namedFunctions: NamedFunctionMap =
   namedDefinitions
     .map((def, op) => new NamedFunction(op, def))
     .toMap();
+
+export type GeoFunctionMap = Map<C.GeoOperator, GeoFunction>;
+export const geoFunctions: GeoFunctionMap = 
+  geoDefinitions
+    .map((def, op) => new GeoFunction(op, def))
+    .toMap();   

@@ -11,6 +11,7 @@ import {
   namedFunctions,
   regularFunctions,
   specialFunctions,
+  geoFunctions,
 } from './functions';
 import { TypeURL as DT } from './util/Consts';
 
@@ -163,9 +164,24 @@ function transformOperator(expr: Alg.OperatorExpression)
   }
 }
 
+function transformGeoOperator(expr: Alg.NamedExpression)
+  : E.SpecialOperatorExpression {
+  const op: C.GeoOperator = expr.name.value as C.GeoOperator;
+  const args = expr.args.map((a) => transformAlgebra(a));
+  const func = geoFunctions.get(op);
+  if (!func.checkArity(args)) {
+    throw new Err.InvalidArity(args, op);
+  }
+  return new E.SpecialOperator(args, func.applyAsync, func.applySync);
+}
+
 // TODO: Support passing functions to override default behaviour;
-export function transformNamed(expr: Alg.NamedExpression): E.NamedExpression {
+export function transformNamed(expr: Alg.NamedExpression): E.NamedExpression | E.SpecialOperatorExpression {
   const funcName = expr.name.value;
+  //Check op custom geo functies
+  if(C.GeoOperators.contains(funcName)){
+    return transformGeoOperator(expr);
+  }
   if (!C.NamedOperators.contains(funcName as C.NamedOperator)) {
     throw new Err.UnknownNamedOperator(expr.name.value);
   }

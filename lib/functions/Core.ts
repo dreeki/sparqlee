@@ -3,6 +3,7 @@ import { List, Map } from 'immutable';
 import * as E from '../expressions';
 import * as C from '../util/Consts';
 import * as Err from '../util/Errors';
+import { GeoDefinition } from './GeoFunctions';
 
 type Term = E.TermExpression;
 
@@ -176,6 +177,21 @@ export type SpecialDefinition = {
   applySync: E.SpecialApplicationSync;
   checkArity?: (args: E.Expression[]) => boolean;
 };
+
+export class GeoFunction {
+  functionClass: 'geo' = 'geo';
+  arity: number;
+  applySync: E.SpecialApplicationSync;
+  applyAsync: E.SpecialApplicationAsync;
+  checkArity: (args: E.Expression[]) => boolean;
+
+  constructor(public operator: C.GeoOperator, definition: GeoDefinition) {
+    this.arity = definition.arity;
+    this.applySync = definition.applySync;
+    this.applyAsync = definition.applyAsync;
+    this.checkArity = definition.checkArity || defaultArityCheck(this.arity);
+  }
+}
 
 // Type Promotion -------------------------------------------------------------
 

@@ -5,6 +5,7 @@ import { ExpressionType, TermExpression, TermType } from './Expressions';
 
 import * as C from '../util/Consts';
 import * as Err from '../util/Errors';
+import { Geometries as GeometryType } from '@turf/helpers';
 
 export abstract class Term implements TermExpression {
   expressionType: ExpressionType.Term = ExpressionType.Term;
@@ -212,5 +213,13 @@ export class NonLexicalLiteral extends Literal<undefined> {
 
     if (isNumericOrBool) { return false; }
     throw new Err.EBVCoercionError(this);
+  }
+}
+
+export class GeometryLiteral extends Literal<GeometryType> {
+  // strValue is mandatory here because toISOString will always add
+  // milliseconds, even if they were not present.
+  constructor(public typedValue: GeometryType, public strValue: string) {
+    super(typedValue, C.make(C.TypeURL.XSD_DATE_TIME), strValue);
   }
 }
